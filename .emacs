@@ -46,7 +46,7 @@
 (define-globalized-minor-mode
   global-fci-mode fci-mode (lambda () (fci-mode 1)))
 (global-fci-mode t)
-(setq-default fill-column 80)
+(setq-default fill-column 79)
 
 ;; Color theme
 (add-to-list 'custom-theme-load-path
