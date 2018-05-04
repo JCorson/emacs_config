@@ -50,13 +50,10 @@
 
 ;; Color theme
 (add-to-list 'custom-theme-load-path
-             "~/.emacs.d/elpa/color-theme-solarized-20150619.1734")
-(add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (let ((mode (if (display-graphic-p frame) 'light 'dark)))
-              (set-frame-parameter frame 'background-mode mode)
-              (set-terminal-paramter frame 'background-mode mode))
-            (enable-theme 'solarized)))
+            "~/.emacs.d/emacs-color-theme-solarized")
+(load-theme 'solarized t)
+(set-frame-parameter nil 'background-mode 'light)
+(set-terminal-parameter nil 'background-mode 'dark)
 
 ;; Ido mode
 (require 'ido)
