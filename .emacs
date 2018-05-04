@@ -190,3 +190,11 @@
    (quote
     (py-yapf company-quickhelp pos-tip nlinum neotree magit fill-column-indicator elpy company autopair))))
 
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
+;; Disable suspend-frame
+(put 'suspend-frame 'disabled t)
+
+;; Use foward-to-word
+(require 'misc)
+
