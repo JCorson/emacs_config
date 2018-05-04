@@ -157,7 +157,7 @@
 ;; Always use spaces, not tabs, when indenting
 (setq-default indent-tabs-mode nil)
 
-;; Show the current line and column numberss in the stats bar
+;; Show the current line and column numbers in the stats bar
 (line-number-mode 1)
 (column-number-mode 1)
 
