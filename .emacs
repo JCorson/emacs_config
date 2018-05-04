@@ -11,8 +11,7 @@
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 
 ;; Define packages needed
-(setq package-list  '(auto-complete
-                      autopair
+(setq package-list  '(autopair
                       company
                       elpy
                       fill-column-indicator
@@ -20,7 +19,7 @@
                       magit
                       neotree
                       nlinum
-                      pos-tip))
+                      yasnippet))
 
 ;; Activate all the packages (in particular autoloads)
 (package-initialize)
@@ -39,37 +38,22 @@
 ;;; Setup Packages ;;;
 ;--------------------;
 
-;; Enable pos-tip
-;(require 'pos-tip)
-;;(pos-tip-show "Testing pos-tip!!")
-
-;; ;; Auto complete
-;; (require 'auto-complete)
-;; (ac-config-default)
-;; ;(ac-ropemacs-initialize)
-;; (global-auto-complete-mode t)
-;; ;; (setqpopup-use-optimized-column-computation nil)
-;; (setq ac-quick-help-prefer-pos-tip t)
-
 ;; Company-mode
-;(add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; Fill column indicator
 (require 'fill-column-indicator)
 (define-globalized-minor-mode
   global-fci-mode fci-mode (lambda () (fci-mode 1)))
 (global-fci-mode t)
-(setq-default fill-column 80)
+(setq-default fill-column 79)
 
 ;; Color theme
 (add-to-list 'custom-theme-load-path
-             "~/.emacs.d/elpa/color-theme-solarized-20150619.1734")
-(add-hook 'after-make-frame-functions
-          (lambda (frame)
-            (let ((mode (if (display-graphic-p frame) 'light 'dark)))
-              (set-frame-parameter frame 'background-mode mode)
-              (set-terminal-paramter frame 'background-mode mode))
-            (enable-theme 'solarized)))
+            "~/.emacs.d/emacs-color-theme-solarized")
+(load-theme 'solarized t)
+(set-frame-parameter nil 'background-mode 'light)
+(set-terminal-parameter nil 'background-mode 'dark)
 
 ;; Ido mode
 (require 'ido)
@@ -79,6 +63,8 @@
 (when (require 'elpy nil t)
   (elpy-enable))
 (setq elpy-rpc-backend "jedi")
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--simple-prompt -i")
 
 ;; Highlight Current Line Settings
 (global-hl-line-mode)
@@ -93,10 +79,6 @@
                             (count-lines (point-min) (point-max))))))))
 (setq nlinum-format "%d ")
 (global-nlinum-mode)
-(global-set-key "(" 'skeleton-pair-insert-maybe)
-
-;; Autopair
-(autopair-global-mode)
 
 ;; Magit settings
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -105,14 +87,17 @@
 (require 'neotree)
 (setq neo-theme 'ascii)
 (custom-set-faces
-  '(neo-banner-face ((t . (:inherit shadow))) t)
-  '(neo-header-face ((t . (:inherit shadow))) t)
-  '(neo-root-dir-face ((t . (:inherit link-visited :underline nil))) t)
-  '(neo-dir-link-face ((t . (:inherit dired-directory))) t)
-  '(neo-file-link-face ((t . (:inherit default))) t)
-  '(neo-button-face ((t . (:inherit dired-directory))) t)
-  '(neo-expand-btn-face ((t . (:inherit button))) t)
-  )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(neo-banner-face ((t :inherit shadow)))
+ '(neo-button-face ((t :inherit dired-directory)))
+ '(neo-dir-link-face ((t :inherit dired-directory)))
+ '(neo-expand-btn-face ((t :inherit button)))
+ '(neo-file-link-face ((t :inherit default)))
+ '(neo-header-face ((t :inherit shadow)))
+ '(neo-root-dir-face ((t :inherit link-visited :underline nil))))
 (setq neo-smart-open t)
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
@@ -126,12 +111,28 @@
       (message "Could not find git project root."))))
 (global-set-key (kbd "C-c p") 'neotree-project-dir)
 (global-set-key (kbd "C-c h") 'neotree-hide)
-(define-key neotree-mode-map (kbd "I") #'neotree-enter-horizontal-split)
-(define-key neotree-mode-map (kbd "i") #'neotree-enter-vertical-split)
+(define-key neotree-mode-map (kbd "h") #'neotree-enter-horizontal-split)
+(define-key neotree-mode-map (kbd "v") #'neotree-enter-vertical-split)
+(eval-after-load "neotree"
+  '(setq neo-hidden-regexp-list '("__pycache__" "*.pyc"))
+  )
+(setq neo-show-hidden-files nil)
 
 ;------------------;
 ;; Misc. Settings ;;
 ;------------------;
+
+;; Commenting Settings
+(defun comment-or-uncomment-line-or-region ()
+  "Comments or uncomments the current line or region."
+  (interactive)
+  (if (region-active-p)
+      (comment-or-uncomment-region (region-beginning) (region-end))
+    (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+    )
+  )
+(global-set-key (kbd "M-/") 'comment-or-uncomment-line-or-region)
+(global-set-key (kbd "C-/") 'comment-or-uncomment-line-or-region)
 
 (tool-bar-mode -1) ;; Disable the toolbar
 (menu-bar-mode -1) ;; Disable the menubar
@@ -144,6 +145,7 @@
 
 ;; Keybindings
 (global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-z") 'undo)
 
 ;; Font
 (set-default-font "Inconsolata 12")
@@ -155,7 +157,7 @@
 ;; Always use spaces, not tabs, when indenting
 (setq-default indent-tabs-mode nil)
 
-;; Show the current line and column numberss in the stats bar
+;; Show the current line and column numbers in the stats bar
 (line-number-mode 1)
 (column-number-mode 1)
 
@@ -174,3 +176,51 @@
 
 ;; Disable autosave
 (setq auto-save-default nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(elpy-modules
+   (quote
+    (elpy-module-company elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
+ '(elpy-test-discover-runner-command (quote ("python" "-m" "unittest" "-v")))
+ '(elpy-test-pytest-runner-command (quote ("py.test" "-v")))
+ '(package-selected-packages
+   (quote
+    (py-yapf company-quickhelp pos-tip nlinum neotree magit fill-column-indicator elpy company autopair))))
+
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
+;; Disable suspend-frame
+(put 'suspend-frame 'disabled t)
+
+;; Use foward-to-word
+(require 'misc)
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+         (next-win-buffer (window-buffer (next-window)))
+         (this-win-edges (window-edges (selected-window)))
+         (next-win-edges (window-edges (next-window)))
+         (this-win-2nd (not (and (<= (car this-win-edges)
+                     (car next-win-edges))
+                     (<= (cadr this-win-edges)
+                     (cadr next-win-edges)))))
+         (splitter
+          (if (= (car this-win-edges)
+             (car (window-edges (next-window))))
+          'split-window-horizontally
+        'split-window-vertically)))
+    (delete-other-windows)
+    (let ((first-win (selected-window)))
+      (funcall splitter)
+      (if this-win-2nd (other-window 1))
+      (set-window-buffer (selected-window) this-win-buffer)
+      (set-window-buffer (next-window) next-win-buffer)
+      (select-window first-win)
+      (if this-win-2nd (other-window 1))))))
+
+(global-set-key (kbd "C-x |") 'toggle-window-split)
