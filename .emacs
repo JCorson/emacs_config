@@ -87,14 +87,17 @@
 (require 'neotree)
 (setq neo-theme 'ascii)
 (custom-set-faces
-  '(neo-banner-face ((t . (:inherit shadow))) t)
-  '(neo-header-face ((t . (:inherit shadow))) t)
-  '(neo-root-dir-face ((t . (:inherit link-visited :underline nil))) t)
-  '(neo-dir-link-face ((t . (:inherit dired-directory))) t)
-  '(neo-file-link-face ((t . (:inherit default))) t)
-  '(neo-button-face ((t . (:inherit dired-directory))) t)
-  '(neo-expand-btn-face ((t . (:inherit button))) t)
-  )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(neo-banner-face ((t :inherit shadow)))
+ '(neo-button-face ((t :inherit dired-directory)))
+ '(neo-dir-link-face ((t :inherit dired-directory)))
+ '(neo-expand-btn-face ((t :inherit button)))
+ '(neo-file-link-face ((t :inherit default)))
+ '(neo-header-face ((t :inherit shadow)))
+ '(neo-root-dir-face ((t :inherit link-visited :underline nil))))
 (setq neo-smart-open t)
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
@@ -108,8 +111,12 @@
       (message "Could not find git project root."))))
 (global-set-key (kbd "C-c p") 'neotree-project-dir)
 (global-set-key (kbd "C-c h") 'neotree-hide)
-(define-key neotree-mode-map (kbd "I") #'neotree-enter-horizontal-split)
-(define-key neotree-mode-map (kbd "i") #'neotree-enter-vertical-split)
+(define-key neotree-mode-map (kbd "h") #'neotree-enter-horizontal-split)
+(define-key neotree-mode-map (kbd "v") #'neotree-enter-vertical-split)
+(eval-after-load "neotree"
+  '(setq neo-hidden-regexp-list '("__pycache__" "*.pyc"))
+  )
+(setq neo-show-hidden-files nil)
 
 ;------------------;
 ;; Misc. Settings ;;
