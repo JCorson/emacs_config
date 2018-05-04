@@ -63,6 +63,8 @@
 (when (require 'elpy nil t)
   (elpy-enable))
 (setq elpy-rpc-backend "jedi")
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--simple-prompt -i")
 
 ;; Highlight Current Line Settings
 (global-hl-line-mode)
