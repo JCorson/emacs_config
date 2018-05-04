@@ -11,8 +11,7 @@
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 
 ;; Define packages needed
-(setq package-list  '(auto-complete
-                      autopair
+(setq package-list  '(autopair
                       company
                       elpy
                       fill-column-indicator
@@ -20,7 +19,7 @@
                       magit
                       neotree
                       nlinum
-                      pos-tip))
+                      yasnippet))
 
 ;; Activate all the packages (in particular autoloads)
 (package-initialize)
@@ -39,20 +38,8 @@
 ;;; Setup Packages ;;;
 ;--------------------;
 
-;; Enable pos-tip
-;(require 'pos-tip)
-;;(pos-tip-show "Testing pos-tip!!")
-
-;; ;; Auto complete
-;; (require 'auto-complete)
-;; (ac-config-default)
-;; ;(ac-ropemacs-initialize)
-;; (global-auto-complete-mode t)
-;; ;; (setqpopup-use-optimized-column-computation nil)
-;; (setq ac-quick-help-prefer-pos-tip t)
-
 ;; Company-mode
-;(add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; Fill column indicator
 (require 'fill-column-indicator)
@@ -93,10 +80,6 @@
                             (count-lines (point-min) (point-max))))))))
 (setq nlinum-format "%d ")
 (global-nlinum-mode)
-(global-set-key "(" 'skeleton-pair-insert-maybe)
-
-;; Autopair
-(autopair-global-mode)
 
 ;; Magit settings
 (global-set-key (kbd "C-x g") 'magit-status)
